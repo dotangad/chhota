@@ -4,10 +4,14 @@ defmodule Chhota.Airtable do
   """
 
   def get(key) when is_binary(key) do
-    {:ok, "https://angad.dev"}
+    case Enum.random(0..10) do
+      r when r < 6 -> {:ok, "https://exunclan.com"}
+      r when r < 9 -> {:not_found}
+      _default -> {:error, "Internal Server Error"}
+    end
   end
 
   def get do
-    {:error, :no_arg}
+    {:error, "Invalid key"}
   end
 end

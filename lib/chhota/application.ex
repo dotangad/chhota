@@ -6,8 +6,10 @@ defmodule Chhota.Application do
   use Application
 
   def start(_type, _args) do
+    port = System.get_env("PORT", "4001") |> String.to_integer()
+
     children = [
-      Plug.Cowboy.child_spec(scheme: :http, plug: Chhota.Router, options: [port: 4001])
+      Plug.Cowboy.child_spec(scheme: :http, plug: Chhota.Router, options: [port: port])
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
