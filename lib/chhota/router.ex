@@ -3,8 +3,12 @@ defmodule Chhota.Router do
   Router responsible for handling requests and redirecting to appropriate URL.
   """
 
-  @base_website Application.get_env(:chhota, :base_website, "https://github.com/dotangad")
   @github_username Application.get_env(:chhota, :github_username, "dotangad")
+  @base_website Application.get_env(
+                  :chhota,
+                  :base_website,
+                  "https://github.com/dotangad"
+                )
 
   use Plug.Router
   alias Chhota.KV

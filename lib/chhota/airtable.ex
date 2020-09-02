@@ -7,9 +7,16 @@ defmodule Chhota.KV do
   @airtable_table_key Application.get_env(:chhota, :table_key, "")
   @airtable_table_name Application.get_env(:chhota, :table_name, "")
 
-  # TODO: add cache
-
   def get(key) when is_binary(key) do
+    case Cachex.get(:chhota, key) do
+      {:ok, nil} -> get_from_airtable(key)
+      {:ok, v} when is_binary(v) -> {:ok, v}
+      {:error, err} -> handle_err(err, :unknown)
+      _ -> {:error, :unknown}
+    end
+  end
+
+  defp get_from_airtable(key) when is_binary(key) do
     response =
       Airtable.list(
         @airtable_api_key,
@@ -22,14 +29,16 @@ defmodule Chhota.KV do
         url_from_record_list(records, key)
 
       {:error, err} ->
-        handle_get_err(err)
+        handle_err(err)
     end
   end
 
-  defp handle_get_err(err) do
+  defp handle_err(err), do: handle_err(err, :unknown)
+
+  defp handle_err(err, reason) do
     IO.inspect(err)
 
-    {:error, :unknown}
+    {:error, reason}
   end
 
   defp url_from_record_list(list, key) do
@@ -41,14 +50,22 @@ defmodule Chhota.KV do
              short == key
            end
          ) do
-      %Airtable.Result.Item{fields: %{"Long" => long}} ->
-        {:ok, long}
+      %Airtable.Result.Item{fields: %{"Long" => url}} ->
+        cache_url(key, url)
 
       nil ->
         {:error, :not_found}
 
       _ ->
         {:error, :unknown}
+    end
+  end
+
+  defp cache_url(key, url) do
+    case Cachex.put(:chhota, key, url, ttl: :timer.seconds(300)) do
+      {:ok, true} -> {:ok, url}
+      {:error, short_name} -> handle_err(short_name, :cachex_err)
+      _ -> {:error, :unknown}
     end
   end
 

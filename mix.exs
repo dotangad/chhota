@@ -16,6 +16,9 @@ defmodule Chhota.MixProject do
     [
       extra_applications: [:logger],
       mod: {Chhota.Application, []}
+      # Elixir automatically infers your list of applications from your deps
+      # (this was added in v1.4), if you set the key manually, you'll have to 
+      # add all the applications your dependencies need.
     ]
   end
 
@@ -23,7 +26,8 @@ defmodule Chhota.MixProject do
   defp deps do
     [
       {:plug_cowboy, "~> 2.0"},
-      {:airtable, "~> 0.4.0"}
+      {:airtable, "~> 0.4.0"},
+      {:cachex, "~> 3.3"}
     ]
   end
 end

@@ -9,7 +9,12 @@ defmodule Chhota.Application do
     port = System.get_env("PORT", "4001") |> String.to_integer()
 
     children = [
-      Plug.Cowboy.child_spec(scheme: :http, plug: Chhota.Router, options: [port: port])
+      {Cachex, name: :chhota},
+      Plug.Cowboy.child_spec(
+        scheme: :http,
+        plug: Chhota.Router,
+        options: [port: port]
+      )
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
