@@ -18,7 +18,8 @@ defmodule Chhota.MixProject do
       mod: {Chhota.Application, []}
       # Elixir automatically infers your list of applications from your deps
       # (this was added in v1.4), if you set the key manually, you'll have to 
-      # add all the applications your dependencies need.
+      # add all the applications your dependencies need. Read - 
+      # http://blog.plataformatec.com.br/2016/07/understanding-deps-and-applications-in-your-mixfile/
     ]
   end
 
